@@ -1,0 +1,3 @@
+cd C:\Users\Administrator\Desktop\
+
+pyinstaller --onefile --icon="C:\Users\Administrator\Desktop\2025高考.ico" C:\Users\Administrator\Desktop\高考倒计时0.2.py
