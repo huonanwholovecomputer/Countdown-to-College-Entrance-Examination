@@ -9,7 +9,7 @@ def update_countdown():
     remaining_time = target_date - now
     days = remaining_time.days
     countdown_text.set(f"{days+1}天")
-    root.after(86400000, update_countdown)
+    root.after(1000, update_countdown)
 
 # 创建主窗口
 root = tk.Tk()
