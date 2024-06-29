@@ -1,5 +1,14 @@
 color a
 
-cd C:\Users\Administrator\Desktop\高考倒计时项目
+cd C:\Users\Administrator\Desktop\高考倒计时项目\2.2阶段（修复亿些BUG）
 
-pyinstaller  --onefile --version-file file_version_info.txt --noconsole --icon=2025高考.ico 2025高考倒计时v0.5.py
+pyinstaller --version-file file_version_info.txt --noconsole --icon=高考倒计时.ico 高考倒计时v2.3.py
+
+
+
+color a
+
+cd C:\Users\Administrator\Desktop\高考倒计时项目\2.2阶段（修复亿些BUG）
+
+pyinstaller --noconsole --icon=高考倒计时.ico 高考倒计时v2.3.py
+
