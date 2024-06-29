@@ -1,7 +1,7 @@
 VSVersionInfo(
     ffi=FixedFileInfo(
-        filevers=(0, 5, 0, 0),
-        prodvers=(0, 5, 0, 0),
+        filevers=(2, 3, 0, 0),
+        prodvers=(2, 3, 0, 0),
         mask=0x3f,
         flags=0x0,
         OS=0x4,
@@ -16,13 +16,13 @@ VSVersionInfo(
                     u'040904B0',
                     [
                         StringStruct(u'CompanyName', u'huonanwholovecomputer'),
-                        StringStruct(u'FileDescription', u'一个2025高考倒计时软件'),
-                        StringStruct(u'FileVersion', u'0.5.0.0'),
+                        StringStruct(u'FileDescription', u'一个基于Python的高考倒计时软件'),
+                        StringStruct(u'FileVersion', u'2.3.0.0'),
                         StringStruct(u'InternalName', u'高考倒计时'),
                         StringStruct(u'LegalCopyright', u'© Github_huonanwholovecomputer 2024'),
-                        StringStruct(u'OriginalFilename', u'2025高考倒计时.exe'),
-                        StringStruct(u'ProductName', u'2025高考倒计时'),
-                        StringStruct(u'ProductVersion', u'0.5.0.0')
+                        StringStruct(u'OriginalFilename', u'高考倒计时.exe'),
+                        StringStruct(u'ProductName', u'高考倒计时'),
+                        StringStruct(u'ProductVersion', u'2.3.0.0')
                     ]
                 )
             ]
