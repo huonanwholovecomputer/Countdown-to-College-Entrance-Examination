@@ -1,6 +1,6 @@
 color a
 
-cd C:\Users\Administrator\Desktop\[项目开发全部的文件]高考倒计时项目\高考倒计时项目\2.2阶段（修复亿些BUG）
+cd C:\Users\Administrator\Documents\[项目开发全部的文件]高考倒计时项目\高考倒计时项目\2.2阶段（修复亿些BUG）
 
 pyinstaller --version-file file_version_info.txt --noconsole --icon=高考倒计时.ico 高考倒计时v2.3.1.py
 
@@ -8,6 +8,7 @@ pyinstaller --version-file file_version_info.txt --noconsole --icon=高考倒计
 
 color a
 
-cd C:\Users\Administrator\Desktop\[项目开发全部的文件]高考倒计时项目\高考倒计时项目\2.2阶段（修复亿些BUG）
+cd C:\Users\Administrator\Documents\[项目开发全部的文件]高考倒计时项目\高考倒计时项目\2.2阶段（修复亿些BUG）
 
 pyinstaller --noconsole --icon=高考倒计时.ico 高考倒计时v2.3.1.py
+
