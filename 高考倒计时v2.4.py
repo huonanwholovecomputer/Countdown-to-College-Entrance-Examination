@@ -1,6 +1,7 @@
 from tkinter import simpledialog, Tk, Label, font  # 提供简单的对话框、Tkinter主窗口、标签组件和字体管理
 from datetime import datetime, timedelta  # 提供日期和时间的处理
 from pystray import MenuItem as item  # 右键菜单相关模块
+import win32com.shell.shell as shell  # 用于执行与管理员权限相关的操作
 from PIL import Image, ImageTk  # 提供图像处理功能和Tkinter兼容的图像显示
 import win32com.client  # 提供访问Windows COM对象的接口
 import threading  # 提供线程管理和同步支持
@@ -37,7 +38,7 @@ year_3 = date_year + 2
 program_data_storage_directory = os.path.join(os.path.expanduser("~"), "AppData", "Roaming", "Countdown_software")
 os.makedirs(program_data_storage_directory, exist_ok=True)
 config_path = os.path.join(program_data_storage_directory, "config.json")
-shortcut_path = r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\2025高考倒计时.lnk"
+shortcut_path = r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\2025高考倒计时.lnk"  # 快捷方式路径
 # 获取程序所在目录
 if getattr(sys, 'frozen', False):
     # 如果程序被打包成了EXE
@@ -77,7 +78,7 @@ class GUI:
         self.root.geometry(f"{self.window_width}x{self.window_height}+{self.position_right}+{self.position_down}")  # 窗口位置、大小
         self.time_label.pack(pady=0)
 
-    # def 更新时间
+    # 更新时间
     def update_time(self):
         if not self.running:
             return
@@ -135,18 +136,18 @@ class GUI:
 
 # 右键菜单-显示/隐藏
 
-    # def 显示/隐藏窗口
+    # 显示/隐藏窗口
     def toggle_window_visibility(self, icon=None, item=None):
         if self.root.state() == "withdrawn":
             self.show_window()
         else:
             self.hide_window()
 
-    # def 隐藏窗口
+    # 隐藏窗口
     def hide_window(self):
         self.root.withdraw()  # 隐藏窗口
 
-    # def 显示窗口
+    # 显示窗口
     def show_window(self):
         self.icon.visible = True
         self.root.deiconify()  # 恢复窗口
@@ -154,14 +155,14 @@ class GUI:
 
 # 右键菜单-转换桌面窗口模式
 
-    # def 转换Tkinter窗口模式
+    # 转换Tkinter窗口模式
     def conversion(self):
         self.condition = not self.condition
         self.root.overrideredirect(self.condition)
 
 # 右键菜单-时间格式
 
-    # def 修改时间格式
+    # 修改时间格式
     def change_time_format(self, format_type):
         format_dict = {
             1: f"{self.days} 天 {self.hours} 小时 {self.minutes} 分 {self.seconds} 秒",
@@ -184,39 +185,37 @@ class GUI:
 
 # 右键菜单-其他设置-开机自启动
 
-    # def 获取lnk文件内部指向的exe程序路径
-    def get_shortcut_target(shortcut_path):
-        shell = win32com.client.Dispatch("WScript.Shell")
-        shortcut = shell.CreateShortcut(shortcut_path)
-        return os.path.abspath(shortcut.TargetPath)
-
-    # def 创建程序快捷方式
+    # 创建程序快捷方式
     def create_shortcut(self, exe_path, shortcut_path):
+        startup_dir = os.path.dirname(shortcut_path)
+        if not os.path.exists(startup_dir):
+            os.makedirs(startup_dir)
+        
         shell = win32com.client.Dispatch("WScript.Shell")
         shortcut = shell.CreateShortCut(shortcut_path)
         shortcut.Targetpath = exe_path
         shortcut.WorkingDirectory = os.path.dirname(exe_path)
         shortcut.save()
 
-    # def 删除快捷方式
+    # 删除快捷方式
     def remove_shortcut(self, shortcut_path):
         if os.path.exists(shortcut_path):
             os.remove(shortcut_path)
             
-    # def 检测快捷方式是否存在
+    # 检测快捷方式是否存在
     def is_shortcut_exist(self):
         return os.path.exists(shortcut_path)
 
-    # def "开机自启动"右键菜单主逻辑
+    # "开机自启动"右键菜单主逻辑
     def toggle_autostart(self):
-        if os.path.exists(shortcut_path):
+        if self.is_shortcut_exist():
             self.remove_shortcut(shortcut_path)
         else:
             self.create_shortcut(exe_path, shortcut_path)
 
 # 右键菜单-其他设置-字体大小
 
-    # def 修改字体大小
+    # 修改字体大小
     def change_font_size(self):
         size_list = list(range(font_size - 15, font_size + 16))
         def make_font_size_item(size):
@@ -224,7 +223,7 @@ class GUI:
         font_size_menu_items = [make_font_size_item(size) for size in size_list]
         return pystray.Menu(*font_size_menu_items)
 
-    # def 设置字体大小选择回调函数
+    # 设置字体大小选择回调函数
     def set_font_size(self, size):
         self.running = False  # 停止当前的时间更新
         self.time_label.destroy()  # 摧毁tkinter窗口现有的标签
@@ -241,7 +240,7 @@ class GUI:
         filtered_fonts = [name for name in font_names if "@" not in name and not name.isascii()]
         return sorted(set(filtered_fonts))
 
-    # def 设置字体选择回调函数
+    # 设置字体选择回调函数
     def set_font(self, font_name):
         self.running = False  # 停止当前的时间更新
         self.time_label.destroy()  # 摧毁tkinter窗口现有的标签
@@ -250,7 +249,7 @@ class GUI:
         self.running = True  # 恢复时间更新
         self.update_time()  # 重新启动时间更新
 
-    # def 生成字体菜单
+    # 生成字体菜单
     def create_font_menu(self):
         fonts = self.get_system_fonts()
         def make_font_item(font_name):
@@ -260,7 +259,7 @@ class GUI:
 
 # 右键菜单-其他设置-高考年份
 
-    # def 应用[date_year]变量
+    # 应用[date_year]变量
     def return_date_year(self, year):
         self.running = False  # 停止当前的时间更新
         self.time_label.destroy()  # 摧毁tkinter窗口现有的标签
@@ -271,7 +270,7 @@ class GUI:
 
 # 右键菜单-其他设置-恢复出厂设置
 
-    # def 恢复出厂设置
+    # 恢复出厂设置
     def restore_factory_settings(self):
         self.running = False  # 停止当前的时间更新
         self.time_label.destroy()  # 摧毁tkinter窗口现有的标签
@@ -280,7 +279,7 @@ class GUI:
         self.running = True  # 恢复时间更新
         self.update_time()  # 重新启动时间更新
 
-    # def 退出程序
+    # 退出程序
     def quit_window(self, icon: pystray.Icon, item=None):
         # 获取窗口的位置和尺寸
         self.position_right, self.position_down = self.root.winfo_x(), self.root.winfo_y()
@@ -288,13 +287,13 @@ class GUI:
         self.running = False  # 停止更新循环
         self.root.after(0, self._quit_window)  # 在主线程中执行退出操作
 
-    # def 结束所有活动
+    # 结束所有活动
     def _quit_window(self):
         self.icon.stop()  # 停止 Pystray 的事件循环
         self.root.quit()  # 终止 Tkinter 的事件循环
         self.root.destroy()  # 销毁应用程序的主窗口和所有活动
 
-    # def 创建托盘图标及右键菜单
+    # 创建托盘图标及右键菜单
     def create_systray_icon(self):
         precision_submenu_1 = pystray.Menu(
             pystray.MenuItem("天/时/分/秒", lambda: self.change_time_format(1), checked=lambda item: self.time_format == 1),
@@ -341,7 +340,7 @@ class GUI:
         self.icon = pystray.Icon("icon", image, "高考倒计时", main_menu)
         threading.Thread(target=self.icon.run, daemon=True).start()
 
-    # def 接收信息的端口
+    # 接收信息的端口
     def handle_requests(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((HOST, PORT))
@@ -353,7 +352,7 @@ class GUI:
                     if data == b"show":
                         self.show_window()
 
-    # def 发送"显示窗口"的信息：进程间通信
+    # 发送"显示窗口"的信息：进程间通信
     def send_show_request(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
@@ -416,8 +415,19 @@ def send_show_request():
         except ConnectionRefusedError:
             return False
 
+# 保证以管理员的身份运行程序
+def run_as_admin():
+    if shell.IsUserAnAdmin():
+        return True  # 已经是管理员权限
+    else:
+        script = os.path.abspath(sys.argv[0])
+        params = ' '.join([script] + sys.argv[1:])
+        shell.ShellExecuteEx(lpVerb='runas', lpFile=sys.executable, lpParameters=params)
+        sys.exit(0)  # 退出当前进程
+
 # 主程序
 if __name__ == "__main__":
+    run_as_admin()
     if not send_show_request():  # 如果发送"show"失败
         if os.path.exists(config_path):  # 如果配置文件存在
             # 尝试加载已有的配置
@@ -441,6 +451,7 @@ if __name__ == "__main__":
             date_year, title_name, condition, font_name, font_size, time_format, window_width, window_height, position_right, position_down = Default_setting()
 
         gui = GUI(date_year, title_name, condition, font_name, font_size, time_format, window_width, window_height, position_right, position_down)
+
         gui.root.mainloop()
 
         # 程序结束时保存配置
