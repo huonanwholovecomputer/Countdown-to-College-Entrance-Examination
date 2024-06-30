@@ -3,12 +3,13 @@ from datetime import datetime, timedelta  # 提供日期和时间的处理
 from pystray import MenuItem as item  # 右键菜单相关模块
 from PIL import Image, ImageTk  # 提供图像处理功能和Tkinter兼容的图像显示
 import win32com.client  # 提供访问Windows COM对象的接口
-import pyautogui  # 用于获取屏幕分辨率 
 import threading  # 提供线程管理和同步支持
+import pyautogui  # 提供获取屏幕分辨率功能
+import pystray  # 提供创建系统托盘图标的功能
 import socket  # 提供网络套接字通信功能
 import ctypes  # 提供调用C语言类型库的接口
-import pystray  # 提供创建系统托盘图标的功能
 import json  # 提供JSON数据编码和解码功能
+import sys  # 提供获取当前可执行文件的路径的功能
 import os  # 提供操作系统依赖的接口函数
 
 # 设置 DPI 感知，改善在高 DPI 设置下的显示效果
