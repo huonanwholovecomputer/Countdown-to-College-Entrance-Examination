@@ -37,7 +37,11 @@ program_data_storage_directory = os.path.join(os.path.expanduser("~"), "AppData"
 os.makedirs(program_data_storage_directory, exist_ok=True)
 config_path = os.path.join(program_data_storage_directory, "config.json")
 shortcut_path = r"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp\2025高考倒计时.lnk"
-exe_path = os.path.abspath(__file__)
+# 获取程序所在目录
+if getattr(sys, 'frozen', False):  # 如果程序被打包成了EXE
+    exe_path = os.path.dirname(sys.executable)
+else:  # 如果程序在解释器中运行
+    exe_path = os.path.dirname(os.path.abspath(__file__))
 
 # 定义一个名为GUI的类
 class GUI:
