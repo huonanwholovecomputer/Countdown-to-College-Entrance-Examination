@@ -1,4 +1,5 @@
 from tkinter import simpledialog, Tk, Label, font  # 提供简单的对话框、Tkinter主窗口、标签组件和字体管理
+from dateutil.relativedelta import relativedelta  # 提供日期、时间的计算
 from datetime import datetime, timedelta  # 提供日期和时间的处理
 from pystray import MenuItem as item  # 右键菜单相关模块
 import win32com.shell.shell as shell  # 用于执行与管理员权限相关的操作
@@ -90,16 +91,11 @@ class GUI:
         self.minutes = (seconds % 3600) // 60
         self.seconds = seconds % 60
         total_days = countdown.days
-        current_date = now
-        months = 0
-        while current_date < target_date:
-            month_days = (current_date + timedelta(days=32)).replace(day=1) - current_date.replace(day=1)
-            if current_date + month_days > target_date:
-                break
-            months += 1
-            current_date += month_days
+        rd = relativedelta(target_date, now)
+        months = rd.months
         self.months = months
         self.weeks = total_days // 7
+
         if self.time_format == 1:
             time_str = f"{self.days} 天 {self.hours} 小时 {self.minutes} 分 {self.seconds} 秒"
         elif self.time_format == 2:
@@ -109,13 +105,13 @@ class GUI:
         elif self.time_format == 4:
             time_str = f"{self.days+1} 天"
         elif self.time_format == 5:
-            time_str = f"{self.months} 月 {self.days % 30} 天 {self.hours} 时 {self.minutes} 分 {self.seconds} 秒"
+            time_str = f"{self.months} 月 {rd.days} 天 {self.hours} 时 {self.minutes} 分 {self.seconds} 秒"
         elif self.time_format == 6:
-            time_str = f"{self.months} 月 {self.days % 30} 天 {self.hours} 时 {self.minutes+1} 分"
+            time_str = f"{self.months} 月 {rd.days} 天 {self.hours} 时 {self.minutes+1} 分"
         elif self.time_format == 7:
-            time_str = f"{self.months} 月 {self.days % 30} 天 {self.hours+1} 时"
+            time_str = f"{self.months} 月 {rd.days} 天 {self.hours+1} 时"
         elif self.time_format == 8:
-            time_str = f"{self.months} 月 {self.days % 30 + 1} 天"
+            time_str = f"{self.months} 月 {rd.days + 1} 天"
         elif self.time_format == 9:
             time_str = f"{self.months+1} 月"
         elif self.time_format == 10:
@@ -128,7 +124,9 @@ class GUI:
             time_str = f"{self.weeks} 周 {self.days % 7 + 1} 天"
         elif self.time_format == 14:
             time_str = f"{self.weeks+1} 周"
+
         self.time_label.config(text=time_str)
+
         now = datetime.now()
         next_second = (now + timedelta(seconds=1)).replace(microsecond=0)
         delay = (next_second - now).total_seconds() * 1000
@@ -164,23 +162,6 @@ class GUI:
 
     # 修改时间格式
     def change_time_format(self, format_type):
-        format_dict = {
-            1: f"{self.days} 天 {self.hours} 小时 {self.minutes} 分 {self.seconds} 秒",
-            2: f"{self.days} 天 {self.hours} 小时 {self.minutes+1} 分",
-            3: f"{self.days} 天 {self.hours+1} 小时",
-            4: f"{self.days+1} 天",
-            5: f"{self.months} 月 {self.days % 30} 天 {self.hours} 时 {self.minutes} 分 {self.seconds} 秒",
-            6: f"{self.months} 月 {self.days % 30} 天 {self.hours} 时 {self.minutes+1} 分",
-            7: f"{self.months} 月 {self.days % 30} 天 {self.hours+1} 时",
-            8: f"{self.months} 月 {self.days % 30 + 1} 天",
-            9: f"{self.months+1} 月",
-            10: f"{self.weeks} 周 {self.days % 7} 天 {self.hours} 时 {self.minutes} 分 {self.seconds} 秒",
-            11: f"{self.weeks} 周 {self.days % 7} 天 {self.hours} 时 {self.minutes+1} 分",
-            12: f"{self.weeks} 周 {self.days % 7} 天 {self.hours+1} 时",
-            13: f"{self.weeks} 周 {self.days % 7 + 1} 天",
-            14: f"{self.weeks+1} 周"
-        }
-        self.time_label.config(text=format_dict[format_type])
         self.time_format = format_type
 
 # 右键菜单-其他设置-开机自启动
